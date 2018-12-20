@@ -36,5 +36,4 @@ class RequestLogHistory(RequestLogMixin):
     )
     class Meta:
         ordering = ['-request_time']
-        app_label = 'throttle'
         index_together = ['user', 'request_url']

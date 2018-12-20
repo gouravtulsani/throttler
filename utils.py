@@ -17,21 +17,41 @@ def get_client_username(request):
 def get_request_url(request):
     return request.META.get('PATH_INFO', '')
 
+def request_logger(request):
+    username = get_client_username(request)
+    req_url = get_request_url(request)
+
+    RequestLogHistory.objects.create(
+        user = username,
+        request_url = req_url
+    )
+
+
 def validate_inputs(**fields):
-    if 'limit' in fields:
-        if not isinstance(fields['limit'], int):
+    if 'integer' in fields and fields['integer'] is not None:
+        if not isinstance(fields['integer'], int):
             raise ValueError(
-                "limit: invalid input type 'Expected: int'")
+                "invalid input type 'Expected: int'")
 
-    if 'duration' in fields:
-        if not isinstance(fields['duration'], timedelta):
+    if 'string' in fields and fields['string'] is not None:
+        if not isinstance(fields['string'], str):
             raise ValueError(
-                "duration must be an object of datetime.timedelta")
+                "invalid input type 'Expected: str'")
 
-    if 'restrict_super_user' in fields:
-        if not isinstance(fields['restrict_super_user'], bool):
+    if 'datetimedelta' in fields and fields['datetimedelta'] is not None:
+        if not isinstance(fields['datetimedelta'], timedelta):
             raise ValueError(
-                "restrict_super_user: invalid input type 'Expected: bool'")
+                "must be an object of datetime.timedelta")
+
+    if 'boolean' in fields and fields['boolean'] is not None:
+        if not isinstance(fields['boolean'], bool):
+            raise ValueError(
+                "invalid input type 'Expected: bool'")
+
+    if 'callable' in fields and fields['callable'] is not None:
+        if not callable(fields['callable']):
+            raise ValueError(
+                "invalid input type Expected callable")
 
 
 def is_request_too_frequent(request, duration=timedelta(seconds=1)):
