@@ -1,5 +1,5 @@
 from django.db import models
-
+from datetime import datetime
 # Create your models here.
 
 
@@ -21,6 +21,7 @@ class RequestLogMixin(models.Model):
 
 
 class RequestLog(RequestLogMixin):
+    last_attempt = models.DateTimeField(auto_now=True)
     first_attempt = models.DateTimeField()
     req_count = models.PositiveIntegerField()
 
